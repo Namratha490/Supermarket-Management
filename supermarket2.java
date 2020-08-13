@@ -61,11 +61,11 @@ void generatebill(){
 
 public static void main(String[] args)
 {
-      outlet c1= new outlet();
-      c1.cashier();
-      c1.display();
-      c1.generatebill();
-      //c1.details();
+      outlet obj[]= new outlet[1];
+      obj[0]= new outlet();
+      obj[0].cashier();
+      obj[0].display();
+      obj[0].generatebill();
 }
 
 }
