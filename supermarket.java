@@ -6,6 +6,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;   
 import discount.calcDiscount; 
 
+class InvalidException extends Exception //prg 9
+{
+    InvalidException(String s)
+    { super(s);
+    }
+
+}
+
 abstract class discount																													
 {
 	abstract void offer();
@@ -22,41 +30,45 @@ public class supermarket extends employee
       double  price = 0.00;
       protected String CashierName;
       Scanner console = new Scanner(System.in);
+      int age;
       
    supermarket(String username){
       CashierName = username;
    }
   public void cashier()
 {
-      int  item, quantity;    
-      char choice;     
-      int pl[]= {50,29,15,10,100,45,150,200,80};
-      String n[]= {"Detergent","Milk","Biscuits","Chocolate","Cookies","Yoghurt","Body Wash","Moisturizer","Jam"};
-      Scanner console = new Scanner(System.in);
+     int item, quantity;
+        char choice;
+        int pl[] = { 50, 29, 15, 10, 100, 45, 260, 200, 80 };
+        String n[] = { "Detergent", "Milk", "Biscuits", "Chocolate", "Cookies", "Yoghurt", "Beer", "Moisturizer",
+            "Jam" };
+        Scanner console = new Scanner(System.in);
+        // try{
+        do {
+          // Get the value from the user.
+          try {
+            System.out.print("Enter itemno: ");
+            item = console.nextInt();
+            if(item == 6){
+              System.out.print("Enter age: ");  
+              age = console.nextInt();
+            }
+            System.out.println("Enter Quantity: ");
+            quantity = console.nextInt();
+            double p = pl[item];
+            price = price + (quantity * p);
+            list.add(n[item]);
+            pricearray.add(quantity * p);
 
-      do
-      {
-         // Get the value from the user.
-         System.out.print("Enter itemno: ");
-         item = console.nextInt();
-	 System.out.println("Enter Quantity: ");
-	 quantity = console.nextInt();
-         for(int i=0; i<9; i++)
-	 {
-	   if(item == i){
-	    double p = pl[item];
-	    price = price + (quantity * p);
-	    list.add(n[item]);
-	    pricearray.add(quantity*p);
-			}
-	    //else{ System.out.println("Item does not exist!");
-		  //System.exit(0);}
-	 }	
-	
-         System.out.print("Add next item?(Y for yes or N for no): ");
-         choice = console.next().charAt(0);
-       }
-      while ((choice == 'y') || (choice == 'Y'));
+          } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array Index is Out of Bounds");
+            System.exit(1);
+          } // prg 9 Exception
+
+          System.out.print("Add next item?(Y for yes or N for no): ");
+          choice = console.next().charAt(0);
+
+        } while ((choice == 'y') || (choice == 'Y'));
      }
 
  	private void details(){
@@ -84,11 +96,43 @@ final void offer()
   
 }
 
+public void ordervalid(Double pay) throws InvalidException {   //prg 9
+        if (pay == 0.0) {
+          throw new InvalidException("Not valid !!");
+        }
+      }
+
+public void agerestriction() throws InvalidException{
+        if (age < 21 )
+        {
+              throw new InvalidException("Age inappropriate. Must be 21 or older !!!");
+        }
+}
+
+ public void run(){
+        try
+        {
+        for( int i = 0; i<=5 ; i++)
+        {
+        System.out.println("                                                           Costco's: Delivering Goodness ! ");
+        Thread.sleep(10000);
+        }
+      }
+      catch(InterruptedException e)
+      {
+         System.out.println("my thread interrupted");
+      }
+      }
+
 public static void main(String[] args)
-{     outlet.Emp s1 = new outlet.Emp();
+{    
+      supermarket ob = new supermarket(args[0]);
+      outlet.Emp s1 = new outlet.Emp();
       employee eobj = new employee(); 
       Scanner sc = new Scanner (System.in);
       StringBuffer custname = new StringBuffer("Customer : ");
+      Thread thread = new Thread(ob);
+      thread.start();
       eobj.name();
       outlet obj[]= new outlet[1];
       outlet.change();                                     
@@ -99,6 +143,18 @@ public static void main(String[] args)
       if(ans)
       {
       	obj[0].cashier();
+	try {                                  // prg9
+            obj[0].ordervalid(price);
+              } catch (Exception m){
+           System.out.println(m);
+           System.exit(1);}
+           try {                                  // prg9 Exception
+            obj[0].agerestriction();
+          } catch (Exception m)
+          {
+            System.out.println(m);
+            System.exit(1);
+          }
         System.out.println("Customer : ");
         custname.append(sc.nextLine());
         obj[0].display("cash");
